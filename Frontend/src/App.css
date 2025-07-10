@@ -1,0 +1,234 @@
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  color: #3d3d3d; /* texte gris foncé */
+  background-color: #fff4f4; /* fond très pâle pour un contraste doux */
+}
+
+.page-wrapper {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.container {
+  text-align: center;
+  padding: 40px;
+}
+
+.logo {
+  max-width: 200px;
+  margin-bottom: 30px;
+}
+
+.description {
+  font-size: 18px;
+  margin-bottom: 30px;
+  line-height: 1.6;
+  color: #ff6f61; /* rose clair pour la description */
+}
+
+.upload-btn {
+  padding: 12px 24px;
+  background-color: #ffcc00; /* jaune vif */
+  border: none;
+  border-radius: 25px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.upload-btn:hover {
+  background-color: #e6b800; /* jaune plus foncé au hover */
+}
+
+.loader-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loader {
+  border: 8px solid #ff6f61; /* rose clair */
+  border-top: 8px solid #ffcc00; /* jaune vif */
+  border-radius: 50%;
+  width: 80px;
+  height: 80px;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.result-box {
+  background-color: rgba(255, 204, 0, 0.1); /* fond jaune léger */
+  padding: 30px;
+  border-radius: 15px;
+  margin: 30px auto;
+  max-width: 600px;
+  word-wrap: break-word;
+  color: #3d3d3d; /* texte gris pour le résultat */
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 20px;
+}
+
+.action-btn {
+  padding: 10px 20px;
+  margin: 8px;
+  background-color: #ff6f61; /* rose vif */
+  border: none;
+  border-radius: 20px;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.action-btn:hover {
+  background-color: #e65c50; /* rose plus foncé au hover */
+}
+
+footer {
+  text-align: center;
+  padding: 20px;
+  color: #ff6f61; /* rose clair */
+  font-size: 14px;
+}
+
+.error-message {
+  background-color: #ff4d4d; /* rouge d'erreur */
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.error-message button {
+  background-color: white;
+  color: #ff4d4d;
+  border: none;
+  padding: 5px 10px;
+  margin-top: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.auth-form-container {
+  max-width: 400px;
+  margin: 0 auto;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.auth-input {
+  padding: 12px 16px;
+  border: 2px solid rgba(255, 112, 97, 0.3); /* bord rose clair */
+  border-radius: 25px;
+  background-color: rgba(255, 204, 0, 0.1); /* fond jaune léger */
+  color: #3d3d3d;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  outline: none;
+}
+
+.auth-input:focus {
+  border-color: #ff6f61; /* rose vif */
+  background-color: rgba(255, 204, 0, 0.15); /* jaune plus visible au focus */
+  box-shadow: 0 0 10px rgba(255, 204, 0, 0.3);
+}
+
+.auth-input::placeholder {
+  color: #ff6f61; /* placeholder rose clair */
+}
+
+.auth-submit-btn {
+  margin-top: 20px;
+  font-size: 18px;
+  padding: 15px 30px;
+  background-color: #ffcc00; /* jaune vif */
+  border: none;
+  color: white;
+  border-radius: 25px;
+}
+
+.auth-links {
+  text-align: center;
+  margin-top: 30px;
+}
+
+.auth-link {
+  color: #ff6f61; /* rose clair */
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.auth-link:hover {
+  color: #e65c50; /* rose plus foncé au hover */
+  text-decoration: underline;
+}
+
+.forgot-link {
+  display: block;
+  margin-top: 15px;
+  font-size: 14px;
+  color: #ff6f61 !important; /* rose clair */
+}
+
+.success-message {
+  background-color: #4caf50; /* vert pour le succès */
+  color: white;
+  padding: 15px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.success-message button {
+  background-color: white;
+  color: #4caf50;
+  border: none;
+  padding: 5px 10px;
+  margin-top: 10px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .auth-form-container {
+    padding: 0 10px;
+  }
+  
+  .container {
+    padding: 20px;
+  }
+}
