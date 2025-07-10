@@ -50,7 +50,7 @@ function Login() {
             }
 
             localStorage.setItem('token', data.token);
-            navigate('/');
+            navigate('/events');
             
         } catch (error) {
             console.error('Erreur de connexion:', error);
@@ -94,9 +94,6 @@ function Login() {
             )}
 
             <div className="container">
-                {/* Logo */}
-                <img src="/logo.png" alt="Briefly Logo" className="logo" />
-
                 <h1 style={{ marginBottom: '10px', fontSize: '2.2rem', fontWeight: '300' }}>
                     Connexion
                 </h1>

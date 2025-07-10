@@ -1,4 +1,3 @@
-// backend/config/database.js
 import { Sequelize } from 'sequelize';
 
 const sequelize = new Sequelize(
@@ -15,10 +14,21 @@ const sequelize = new Sequelize(
             collate: 'utf8mb4_unicode_ci',
         },
         pool: {
-            max: 5,
-            min: 0,
-            acquire: 30000,
-            idle: 10000
+            max: 10,              
+            min: 2,               
+            acquire: 60000,       
+            idle: 10000,
+            evict: 1000,         
+        },
+        retry: {
+            max: 3,
+            timeout: 10000,
+        },
+        dialectOptions: {
+            connectTimeout: 60000,
+            acquireTimeout: 60000,
+            timeout: 60000,
+            multipleStatements: false,
         }
     }
 );

@@ -72,7 +72,7 @@ function Register() {
 
             if (data.token) {
                 localStorage.setItem('token', data.token);
-                navigate('/');
+                navigate('/events');
             } else {
                 navigate('/login', { 
                     state: { message: 'Inscription réussie ! Vous pouvez maintenant vous connecter.' }

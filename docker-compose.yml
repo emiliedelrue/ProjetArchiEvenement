@@ -1,21 +1,102 @@
-version: '3.8'
-
 services:
-  mariadb:
-    image: mariadb:10.11
-    container_name: billetterie-mariadb
+  # Nœud 1 — BOOTSTRAP
+  mariadb-node1:
+    image: bitnami/mariadb-galera:latest
+    container_name: billetterie-mariadb-node1
     restart: unless-stopped
     ports:
       - "3306:3306"
     environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: billetterie
-      MYSQL_USER: billetterie_user
-      MYSQL_PASSWORD: billetterie_password
+      MARIADB_GALERA_CLUSTER_NAME: my_galera
+      MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://          # vide = bootstrap
+      MARIADB_GALERA_CLUSTER_BOOTSTRAP: "yes"
+      MARIADB_GALERA_ENABLE: "true"
+      MARIADB_ROOT_PASSWORD: galerapass
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_GALERA_MARIABACKUP_USER: backup
+      MARIADB_GALERA_MARIABACKUP_PASSWORD: backuppass
+      MARIADB_GALERA_FORCE_SAFETOBOOTSTRAP: "yes"
+      MARIADB_DATABASE: billetterie
+      MARIADB_USER: billetterie_user
+      MARIADB_PASSWORD: billetterie_password
     volumes:
-      - mariadb_data:/var/lib/mysql
+      - galera1_data:/bitnami/mariadb
     networks:
       - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nœud 2
+  mariadb-node2:
+    image: bitnami/mariadb-galera:latest
+    container_name: billetterie-mariadb-node2
+    restart: unless-stopped
+    ports:
+      - "3307:3306"
+    depends_on:
+      - mariadb-node1
+    environment:
+      MARIADB_GALERA_CLUSTER_NAME: my_galera
+      MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://billetterie-mariadb-node1,billetterie-mariadb-node2,billetterie-mariadb-node3
+      MARIADB_GALERA_ENABLE: "true"
+      MARIADB_ROOT_PASSWORD: galerapass
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_GALERA_MARIABACKUP_USER: backup
+      MARIADB_GALERA_MARIABACKUP_PASSWORD: backuppass
+    volumes:
+      - galera2_data:/bitnami/mariadb
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Nœud 3
+  mariadb-node3:
+    image: bitnami/mariadb-galera:latest
+    container_name: billetterie-mariadb-node3
+    restart: unless-stopped
+    ports:
+      - "3308:3306"
+    depends_on:
+      - mariadb-node1
+    environment:
+      MARIADB_GALERA_CLUSTER_NAME: my_galera
+      MARIADB_GALERA_CLUSTER_ADDRESS: gcomm://billetterie-mariadb-node1,billetterie-mariadb-node2,billetterie-mariadb-node3
+      MARIADB_GALERA_ENABLE: "true"
+      MARIADB_ROOT_PASSWORD: galerapass
+      MARIADB_ROOT_HOST: '%'
+      MARIADB_GALERA_MARIABACKUP_USER: backup
+      MARIADB_GALERA_MARIABACKUP_PASSWORD: backuppass
+    volumes:
+      - galera3_data:/bitnami/mariadb
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -uroot -p$$MARIADB_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  haproxy:
+    image: haproxy:2.8
+    container_name: billetterie-haproxy
+    ports:
+      - "3309:3309"
+      - "8080:8080"  # Pour les stats
+    volumes:
+      - ./config/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg
+    networks:
+      - app-network
+    depends_on:
+      - mariadb-node1
+      - mariadb-node2
+      - mariadb-node3
 
   backend:
     container_name: node
@@ -23,11 +104,11 @@ services:
     ports:
       - "3000:3000" 
     depends_on:
-      - mariadb
+      - haproxy
     environment:
       - NODE_ENV=development
-      - DB_HOST=mariadb
-      - DB_PORT=3306
+      - DB_HOST=billetterie-haproxy  
+      - DB_PORT=3309
       - DB_NAME=billetterie
       - DB_USER=billetterie_user
       - DB_PASSWORD=billetterie_password
@@ -47,7 +128,7 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "8080:8080" 
+      - "8081:8080"  
     volumes:
       - ./frontend:/app
       - /app/node_modules
@@ -62,7 +143,9 @@ services:
     restart: unless-stopped
 
 volumes:
-  mariadb_data:
+  galera1_data:
+  galera2_data:
+  galera3_data:
 
 networks:
   app-network:
